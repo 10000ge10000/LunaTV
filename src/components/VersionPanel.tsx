@@ -77,16 +77,11 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
     }
   }, [isOpen]);
 
-  // 获取远程变更日志
+  // 获取远程变更日志 - 已禁用以完全切断与原仓库的连接
   const fetchRemoteChangelog = async () => {
     try {
-      const response = await fetch(
-        'https://raw.githubusercontent.com/MoonTechLab/LunaTV/main/CHANGELOG'
-      );
-      if (response.ok) {
-        const content = await response.text();
-        const parsed = parseChangelog(content);
-        setRemoteChangelog(parsed);
+      // 禁用外部请求，仅使用本地变更日志
+      setRemoteChangelog(null);
 
         // 检查是否有更新
         if (parsed.length > 0) {
@@ -362,15 +357,12 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
                       </p>
                     </div>
                   </div>
-                  <a
-                    href='https://github.com/MoonTechLab/LunaTV'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='inline-flex items-center justify-center gap-2 px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-xs sm:text-sm rounded-lg transition-colors shadow-sm w-full'
+                  <div
+                    className='inline-flex items-center justify-center gap-2 px-3 py-2 bg-gray-400 text-white text-xs sm:text-sm rounded-lg transition-colors shadow-sm w-full cursor-not-allowed'
                   >
                     <Download className='w-3 h-3 sm:w-4 sm:h-4' />
-                    前往仓库
-                  </a>
+                    更新已禁用
+                  </div>
                 </div>
               </div>
             )}
@@ -392,15 +384,12 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
                       </p>
                     </div>
                   </div>
-                  <a
-                    href='https://github.com/MoonTechLab/LunaTV'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='inline-flex items-center justify-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm rounded-lg transition-colors shadow-sm w-full'
+                  <div
+                    className='inline-flex items-center justify-center gap-2 px-3 py-2 bg-gray-400 text-white text-xs sm:text-sm rounded-lg transition-colors shadow-sm w-full cursor-not-allowed'
                   >
                     <CheckCircle className='w-3 h-3 sm:w-4 sm:h-4' />
-                    前往仓库
-                  </a>
+                    已是最新版本
+                  </div>
                 </div>
               </div>
             )}

@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     // 生成文件名
     const now = new Date();
     const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
-    const filename = `moontv-backup-${timestamp}.dat`;
+    const filename = `10000tv-backup-${timestamp}.dat`;
 
     // 返回加密的数据作为文件下载
     return new NextResponse(encryptedData, {
