@@ -117,6 +117,15 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'add': {
+        // 检查是否允许注册
+        const enableRegister = process.env.NEXT_PUBLIC_ENABLE_REGISTER;
+        if (enableRegister !== 'true') {
+          return NextResponse.json(
+            { error: '用户注册功能已关闭' },
+            { status: 403 }
+          );
+        }
+
         if (targetEntry) {
           return NextResponse.json({ error: '用户已存在' }, { status: 400 });
         }
