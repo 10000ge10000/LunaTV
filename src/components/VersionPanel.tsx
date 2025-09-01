@@ -17,7 +17,7 @@ import { createPortal } from 'react-dom';
 
 import { changelog, ChangelogEntry } from '@/lib/changelog';
 import { CURRENT_VERSION } from '@/lib/version';
-import { compareVersions, UpdateStatus } from '@/lib/version_check';
+// import { compareVersions, UpdateStatus } from '@/lib/version_check'; // Disabled for privatization
 
 interface VersionPanelProps {
   isOpen: boolean;
@@ -81,29 +81,16 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
   const fetchRemoteChangelog = async () => {
     try {
       // 禁用外部请求，仅使用本地变更日志
-      setRemoteChangelog(null);
-
-        // 检查是否有更新
-        if (parsed.length > 0) {
-          const latest = parsed[0];
-          setLatestVersion(latest.version);
-          setIsHasUpdate(
-            compareVersions(latest.version) === UpdateStatus.HAS_UPDATE
-          );
-        }
-      } else {
-        console.error(
-          '获取远程变更日志失败:',
-          response.status,
-          response.statusText
-        );
-      }
+      setRemoteChangelog([]);
+      setIsHasUpdate(false);
+      setLatestVersion(CURRENT_VERSION);
     } catch (error) {
       console.error('获取远程变更日志失败:', error);
     }
   };
 
-  // 解析变更日志格式
+  // 解析变更日志格式 - 已禁用以完全切断与原仓库的连接
+  /*
   const parseChangelog = (content: string): RemoteChangelogEntry[] => {
     const lines = content.split('\n');
     const versions: RemoteChangelogEntry[] = [];
@@ -170,6 +157,7 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
 
     return versions;
   };
+  */
 
   // 渲染变更日志条目
   const renderChangelogEntry = (

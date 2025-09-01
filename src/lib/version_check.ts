@@ -12,9 +12,9 @@ export enum UpdateStatus {
 }
 
 // 远程版本检查URL配置 - 已禁用以完全切断与原仓库的连接
-const VERSION_CHECK_URLS: string[] = [
-  // 外部版本检查已禁用
-];
+// const VERSION_CHECK_URLS: string[] = [
+//   // 外部版本检查已禁用
+// ];
 
 /**
  * 检查是否有新版本可用
@@ -31,10 +31,11 @@ export async function checkForUpdates(): Promise<UpdateStatus> {
 }
 
 /**
- * 从指定URL获取版本信息
+ * 从指定URL获取版本信息 - 已禁用以完全切断与原仓库的连接
  * @param url - 版本信息URL
  * @returns Promise<string | null> - 版本字符串或null
  */
+/*
 async function fetchVersionFromUrl(url: string): Promise<string | null> {
   try {
     const controller = new AbortController();
@@ -67,6 +68,7 @@ async function fetchVersionFromUrl(url: string): Promise<string | null> {
     return null;
   }
 }
+*/
 
 /**
  * 比较版本号
