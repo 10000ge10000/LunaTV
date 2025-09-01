@@ -71,9 +71,9 @@
 
 ```yml
 services:
-  10000tv-core:
-    image: 10000tv:latest
-    container_name: 10000tv-core
+  10000tv:
+    image: ghcr.io/10000ge10000/10000tv:latest
+    container_name: 10000tv
     restart: on-failure
     ports:
       - '3000:3000'
@@ -105,9 +105,9 @@ volumes:
 
 ```yml
 services:
-  10000tv-core:
-    image: 10000tv:latest
-    container_name: 10000tv-core
+  10000tv:
+    image: ghcr.io/10000ge10000/ghcr.io/10000ge10000/10000tv:latest
+    container_name: 10000tv
     restart: on-failure
     ports:
       - '3000:3000'
@@ -141,9 +141,9 @@ networks:
 3. 使用如下 docker compose
 ```yml
 services:
-  10000tv-core:
-    image: 10000tv:latest
-    container_name: 10000tv-core
+  10000tv:
+    image: ghcr.io/10000ge10000/ghcr.io/10000ge10000/10000tv:latest
+    container_name: 10000tv
     restart: on-failure
     ports:
       - '3000:3000'
