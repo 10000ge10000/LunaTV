@@ -106,7 +106,7 @@ volumes:
 ```yml
 services:
   10000tv:
-    image: ghcr.io/10000ge10000/ghcr.io/10000ge10000/10000tv:latest
+    image: ghcr.io/10000ge10000/10000tv:latest
     container_name: 10000tv
     restart: on-failure
     ports:
@@ -142,7 +142,7 @@ networks:
 ```yml
 services:
   10000tv:
-    image: ghcr.io/10000ge10000/ghcr.io/10000ge10000/10000tv:latest
+    image: ghcr.io/10000ge10000/10000tv:latest
     container_name: 10000tv
     restart: on-failure
     ports:
