@@ -1,0 +1,99 @@
+# Docker Compose for 10000TV Private Deployment
+# This file provides examples for different storage backends
+
+# Option 1: Kvrocks Storage (Recommended)
+version: '3.8'
+services:
+  10000tv-core:
+    image: 10000tv:latest
+    container_name: 10000tv-core
+    restart: on-failure
+    ports:
+      - '3000:3000'
+    environment:
+      - USERNAME=admin
+      - PASSWORD=your_secure_password
+      - NEXT_PUBLIC_SITE_NAME=10000TV
+      - NEXT_PUBLIC_STORAGE_TYPE=kvrocks
+      - KVROCKS_URL=redis://10000tv-kvrocks:6666
+    networks:
+      - 10000tv-network
+    depends_on:
+      - 10000tv-kvrocks
+
+  10000tv-kvrocks:
+    image: apache/kvrocks:latest
+    container_name: 10000tv-kvrocks
+    restart: unless-stopped
+    volumes:
+      - kvrocks-data:/var/lib/kvrocks
+    networks:
+      - 10000tv-network
+
+networks:
+  10000tv-network:
+    driver: bridge
+
+volumes:
+  kvrocks-data:
+
+---
+# Option 2: Redis Storage
+# Uncomment and modify the section below if you prefer Redis
+
+# version: '3.8'
+# services:
+#   10000tv-core:
+#     image: 10000tv:latest
+#     container_name: 10000tv-core
+#     restart: on-failure
+#     ports:
+#       - '3000:3000'
+#     environment:
+#       - USERNAME=admin
+#       - PASSWORD=your_secure_password
+#       - NEXT_PUBLIC_SITE_NAME=10000TV
+#       - NEXT_PUBLIC_STORAGE_TYPE=redis
+#       - REDIS_URL=redis://10000tv-redis:6379
+#     networks:
+#       - 10000tv-network
+#     depends_on:
+#       - 10000tv-redis
+# 
+#   10000tv-redis:
+#     image: redis:alpine
+#     container_name: 10000tv-redis
+#     restart: unless-stopped
+#     networks:
+#       - 10000tv-network
+#     # Enable persistence to avoid data loss
+#     command: redis-server --appendonly yes
+#     volumes:
+#       - redis-data:/data
+# 
+# networks:
+#   10000tv-network:
+#     driver: bridge
+# 
+# volumes:
+#   redis-data:
+
+---
+# Option 3: Upstash Storage (External)
+# Uncomment and modify the section below if you use Upstash
+
+# version: '3.8'
+# services:
+#   10000tv-core:
+#     image: 10000tv:latest
+#     container_name: 10000tv-core
+#     restart: on-failure
+#     ports:
+#       - '3000:3000'
+#     environment:
+#       - USERNAME=admin
+#       - PASSWORD=your_secure_password
+#       - NEXT_PUBLIC_SITE_NAME=10000TV
+#       - NEXT_PUBLIC_STORAGE_TYPE=upstash
+#       - UPSTASH_URL=https://your-upstash-endpoint
+#       - UPSTASH_TOKEN=your-upstash-token
