@@ -33,18 +33,17 @@ function VersionDisplay() {
   }, []);
 
   return (
-    <div
-      className='absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 transition-colors'
-    >
+    <div className='absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 transition-colors'>
       <span className='font-mono'>v{CURRENT_VERSION}</span>
       {!isChecking && updateStatus !== UpdateStatus.FETCH_FAILED && (
         <div
-          className={`flex items-center gap-1.5 ${updateStatus === UpdateStatus.HAS_UPDATE
-            ? 'text-yellow-600 dark:text-yellow-400'
-            : updateStatus === UpdateStatus.NO_UPDATE
+          className={`flex items-center gap-1.5 ${
+            updateStatus === UpdateStatus.HAS_UPDATE
+              ? 'text-yellow-600 dark:text-yellow-400'
+              : updateStatus === UpdateStatus.NO_UPDATE
               ? 'text-green-600 dark:text-green-400'
               : ''
-            }`}
+          }`}
         >
           {updateStatus === UpdateStatus.HAS_UPDATE && (
             <>
@@ -72,6 +71,7 @@ function LoginPageClient() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [shouldAskUsername, setShouldAskUsername] = useState(false);
+  const [registerEnabled, setRegisterEnabled] = useState(false);
 
   const { siteName } = useSite();
 
@@ -80,6 +80,10 @@ function LoginPageClient() {
     if (typeof window !== 'undefined') {
       const storageType = (window as any).RUNTIME_CONFIG?.STORAGE_TYPE;
       setShouldAskUsername(storageType && storageType !== 'localstorage');
+      const regEnabled = Boolean(
+        (window as any).RUNTIME_CONFIG?.REGISTER_ENABLED
+      );
+      setRegisterEnabled(regEnabled);
     }
   }, []);
 
@@ -116,7 +120,58 @@ function LoginPageClient() {
     }
   };
 
-
+  const handleRegister = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setError(null);
+    // 仅非 localstorage 且需要用户名时开放注册
+    const storageType =
+      typeof window !== 'undefined'
+        ? (window as any).RUNTIME_CONFIG?.STORAGE_TYPE
+        : 'localstorage';
+    const registerEnabled =
+      typeof window !== 'undefined'
+        ? Boolean((window as any).RUNTIME_CONFIG?.REGISTER_ENABLED)
+        : false;
+    if (storageType === 'localstorage' || !registerEnabled) {
+      setError('当前模式不支持注册');
+      return;
+    }
+    if (!password || !username) {
+      setError('用户名和密码不能为空');
+      return;
+    }
+    try {
+      setLoading(true);
+      // 调用公开注册接口
+      const reg = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      if (!reg.ok) {
+        const data = await reg.json().catch(() => ({}));
+        setError(data.error ?? '注册失败');
+        return;
+      }
+      // 注册成功后直接登录
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      if (res.ok) {
+        const redirect = searchParams.get('redirect') || '/';
+        router.replace(redirect);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? '登录失败');
+      }
+    } catch (err) {
+      setError('网络错误，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className='relative min-h-screen flex items-center justify-center px-4 overflow-hidden'>
@@ -167,13 +222,23 @@ function LoginPageClient() {
           {/* 登录按钮 */}
           <button
             type='submit'
-            disabled={
-              !password || loading || (shouldAskUsername && !username)
-            }
+            disabled={!password || loading || (shouldAskUsername && !username)}
             className='inline-flex w-full justify-center rounded-lg bg-green-600 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:from-green-600 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
           >
             {loading ? '登录中...' : '登录'}
           </button>
+
+          {/* 注册按钮，仅在开启注册且需要用户名时显示 */}
+          {shouldAskUsername && registerEnabled && (
+            <button
+              type='button'
+              onClick={handleRegister}
+              disabled={!password || !username || loading}
+              className='mt-3 inline-flex w-full justify-center rounded-lg border border-green-600 text-green-700 dark:text-green-400 py-3 text-base font-semibold bg-white dark:bg-transparent hover:bg-green-50 dark:hover:bg-green-900/20 shadow-sm transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50'
+            >
+              {loading ? '注册中...' : '注册新用户'}
+            </button>
+          )}
         </form>
       </div>
 
