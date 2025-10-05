@@ -7,17 +7,17 @@ export interface BangumiCalendarData {
   items: {
     id: number;
     name: string;
-    name_cn: string;
-    rating: {
-      score: number;
+    name_cn?: string;
+    rating?: {
+      score?: number;
     };
-    air_date: string;
-    images: {
-      large: string;
-      common: string;
-      medium: string;
-      small: string;
-      grid: string;
+    air_date?: string;
+    images?: {
+      large?: string;
+      common?: string;
+      medium?: string;
+      small?: string;
+      grid?: string;
     };
   }[];
 }

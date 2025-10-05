@@ -546,40 +546,42 @@ const VideoCard = forwardRef<VideoCardHandle, VideoCardProps>(function VideoCard
           {/* 骨架屏 */}
           {!isLoading && <ImagePlaceholder aspectRatio='aspect-[2/3]' />}
           {/* 图片 */}
-          <Image
-            src={processImageUrl(actualPoster)}
-            alt={actualTitle}
-            fill
-            className={origin === 'live' ? 'object-contain' : 'object-cover'}
-            referrerPolicy='no-referrer'
-            loading='lazy'
-            onLoadingComplete={() => setIsLoading(true)}
-            onError={(e) => {
-              // 图片加载失败时的重试机制
-              const img = e.target as HTMLImageElement;
-              if (!img.dataset.retried) {
-                img.dataset.retried = 'true';
-                setTimeout(() => {
-                  img.src = processImageUrl(actualPoster);
-                }, 2000);
-              }
-            }}
-            style={{
-              // 禁用图片的默认长按效果
-              WebkitUserSelect: 'none',
-              userSelect: 'none',
-              WebkitTouchCallout: 'none',
-              pointerEvents: 'none', // 图片不响应任何指针事件
-            } as React.CSSProperties}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              return false;
-            }}
-            onDragStart={(e) => {
-              e.preventDefault();
-              return false;
-            }}
-          />
+          {actualPoster ? (
+            <Image
+              src={processImageUrl(actualPoster)}
+              alt={actualTitle}
+              fill
+              className={origin === 'live' ? 'object-contain' : 'object-cover'}
+              referrerPolicy='no-referrer'
+              loading='lazy'
+              onLoadingComplete={() => setIsLoading(true)}
+              onError={(e) => {
+                // 图片加载失败时的重试机制
+                const img = e.target as HTMLImageElement;
+                if (!img.dataset.retried) {
+                  img.dataset.retried = 'true';
+                  setTimeout(() => {
+                    img.src = processImageUrl(actualPoster);
+                  }, 2000);
+                }
+              }}
+              style={{
+                // 禁用图片的默认长按效果
+                WebkitUserSelect: 'none',
+                userSelect: 'none',
+                WebkitTouchCallout: 'none',
+                pointerEvents: 'none', // 图片不响应任何指针事件
+              } as React.CSSProperties}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                return false;
+              }}
+              onDragStart={(e) => {
+                e.preventDefault();
+                return false;
+              }}
+            />
+          ) : null}
 
           {/* 悬浮遮罩 */}
           <div

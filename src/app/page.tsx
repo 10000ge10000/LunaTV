@@ -379,11 +379,19 @@ function HomeClient() {
                             from='douban'
                             title={anime.name_cn || anime.name}
                             poster={
-                              anime.images.large ||
-                              anime.images.common ||
-                              anime.images.medium ||
-                              anime.images.small ||
-                              anime.images.grid
+                              (() => {
+                                const poster =
+                                  anime?.images?.large ||
+                                  anime?.images?.common ||
+                                  anime?.images?.medium ||
+                                  anime?.images?.small ||
+                                  anime?.images?.grid ||
+                                  '';
+                                if (!poster) {
+                                  console.warn('Bangumi item missing images', { id: anime?.id, name: anime?.name, images: anime?.images });
+                                }
+                                return poster;
+                              })()
                             }
                             douban_id={anime.id}
                             rate={anime.rating?.score?.toFixed(1) || ''}
